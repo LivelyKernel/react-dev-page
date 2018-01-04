@@ -14,8 +14,6 @@ class HelloMessage extends React.Component {
   }
 }
 
-
 ReactDOM.render(
-    <HelloMessage message="Hello, I'm a react morph!" />,
-  document.getElementById("canvas")
-);
+  <HelloMessage message="I'm a react component" />,
+  document.getElementById("canvas"));
