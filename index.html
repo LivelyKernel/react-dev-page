@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <style>
+      body { margin: 0; }
+      .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "edit-area canvas";
+      }
+      #edit-area { grid-area: edit-area; height: 100vh; outline: 1px solid gray; }
+      #editor { position: relative; width: 100%; height: 100%; }
+      #canvas { grid-area: canvas; outline: 1px solid gray; }
+    </style>
+  </head>
+
+
+  <body>
+    <div class="container">
+      <div id="edit-area"><div id="editor"></div></div>
+      <div id="canvas"></div>
+    </div>
+
+    <!-- load the lively stuff, this includes lively.modules, SystemJS, babel -->
+    <script src="livelify-web.js" type="text/javascript" charset="utf-8"></script>
+
+    <!-- load a text editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js" type="text/javascript" charset="utf-8"></script>
+
+    <script>
+      var editor, baseDir = lively.resources.resource(document.location.href).parent(),
+	  reactModule = lively.modules.module(baseDir.join("some-react.js").url);
+
+      initAce();
+      loadEditorContent().catch(err => console.log(err));
+
+      function initAce() {
+	editor = ace.edit("editor");
+	editor.setOption("showGutter", false)
+	editor.getSession().setUseWorker(false);
+	editor.setTheme("ace/theme/monokai");
+	editor.getSession().setMode("ace/mode/javascript");
+	editor.getKeyboardHandler().addCommand({
+	  name: "[react-dev-page] save and refresh",
+	  bindKey: {mac: "Command-S", win: "Ctrl-S"},
+	  exec: function (e){
+	    reactModule.changeSource(editor.getValue(), {doEval: true, doSave: false/*no write*/})
+	      .catch(err => alert("Error updating code: " + err));
+	  }
+	})
+      }
+
+      function loadEditorContent() {
+	return Promise.resolve()
+          .then(() => lively.modules.registerPackage(baseDir.url))
+          .then(() => reactModule.load())
+          .then(() => reactModule.source())
+          .then(source => {
+	    if (editor.getKeyboardHandler().platform !== "mac")
+              source.replace(/cmd\+|command\+/, "Ctrl+");
+	    editor.setValue(source);
+	    editor.clearSelection();
+	  });
+      }
+    </script>
+
+  </body>
+</html>
