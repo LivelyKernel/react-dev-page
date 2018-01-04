@@ -6,6 +6,7 @@ web page.
 Live version runs at:
   https://lively-next.org/users/robert/react-dev-page/index.html
 
+The `livelify-web.js` script was [packaged](https://gist.github.com/rksm/c0019af0d03e7de29189ff51c080ceb6) based on a current [lively.next installation](https://github.com/LivelyKernel/lively.installer).
 
 You can modify the code and when pressing `Command-S`/ `Control-S` the source
 change will be applied using lively.modules.  This means the runtime is updated
